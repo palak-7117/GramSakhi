@@ -144,6 +144,58 @@ r.onend=r.onerror=()=>b.classList.remove('on');
 try{r.start()}catch(e){b.classList.remove('on')}
 }
 
+function mic3(button) {
+  const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!Speech) {
+    alert('Voice input needs Google Chrome or Microsoft Edge.');
+    return;
+  }
+
+  const recognition = new Speech();
+  recognition.lang = 'hi-IN';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  button.classList.add('on');
+
+  recognition.onresult = event => {
+    const spoken = event.results[0][0].transcript.trim();
+    const numbers = spoken.match(/\d+/g) || [];
+
+    // Put the spoken product name in the product field.
+    const productName = spoken
+      .replace(/\d+/g, '')
+      .replace(/रुपये|रुपया|रु\.?|कीमत|दाम/gi, '')
+      .trim();
+
+    document.querySelector('#pn').value = productName;
+
+    // Speak the price, then quantity: "आम का अचार 150 रुपये 20"
+    if (numbers[0]) document.querySelector('#pp').value = numbers[0];
+    if (numbers[1]) document.querySelector('#pq').value = numbers[1];
+
+    if (!numbers.length) {
+      alert('Product name heard. Please enter the price and quantity.');
+    }
+  };
+
+  recognition.onerror = event => {
+    button.classList.remove('on');
+    alert('Microphone error: ' + event.error +
+      '. Check browser microphone permission and try again.');
+  };
+
+  recognition.onend = () => button.classList.remove('on');
+
+  try {
+    recognition.start();
+  } catch (error) {
+    button.classList.remove('on');
+    alert('Could not start the microphone. Check browser permission and try again.');
+  }
+}
+
 const base=()=>location.href.split('#')[0];
 
 const qr=(id,t)=>{
@@ -913,7 +965,64 @@ route(1)
 
 const D={
 
-add:()=>`
+// add:()=>`
+// <h2>🎤 सामान जोड़ें</h2>
+
+// <p>पीले 🎤 बटन को दबाकर हिंदी में बोलिए।</p>
+
+// <button type="button" class="mic" style="font-size:20px" onclick="mic3(this)">
+// 🎤 सब एक बार में बोलिए
+// </button>
+
+// <p><small>जैसे: "आम का अचार 150 रुपये 20"</small></p>
+
+// ${F('pn','सामान का नाम','जैसे: आम का अचार',1)}
+// ${F('pp','दाम (₹)','',1,1)}
+// ${F('pq','कितना सामान है (संख्या)')}
+
+// <label for="pc">किस्म</label>
+
+// <select id="pc">
+// ${CATS.map(c=>`<option value="${c}">${c}</option>`).join('')}
+// </select>
+
+// ${F('ps','इसकी कहानी','किसने, कैसे बनाया?',1)}
+
+// <label for="pi">📷 फ़ोटो</label>
+// <input id="pi" type="file" accept="image/*" capture="environment">
+
+// <button onclick="addp()">✅ बेचने के लिए डालें</button>
+// `,
+
+//  add: () => `
+//     <h2>🎤 सामान जोड़ें</h2>
+
+//     <p>पीले 🎤 बटन को दबाकर हिंदी में बोलिए।</p>
+
+//     <button type="button" class="mic" onclick="mic3(this)">
+//       🎤 सब एक बार में बोलिए
+//     </button>
+
+//     <p><small>जैसे: "आम का अचार 150 रुपये 20"</small></p>
+
+//     ${F('pn', 'सामान का नाम', 'जैसे: आम का अचार', 1)}
+//     ${F('pp', 'दाम (₹)', '', 1, 1)}
+//     ${F('pq', 'कितना सामान है (संख्या)')}
+
+//     <label for="pc">किस्म</label>
+//     <select id="pc">
+//       ${CATS.map(c => `<option value="${c}">${c}</option>`).join('')}
+//     </select>
+
+//     ${F('ps', 'इसकी कहानी', 'किसने, कैसे बनाया?', 1)}
+
+//     <label for="pi">📷 फ़ोटो</label>
+//     <input id="pi" type="file" accept="image/*" capture="environment">
+
+//     <button onclick="addp()">✅ बेचने के लिए डालें</button>
+//   `,
+
+add: () => `
 <h2>🎤 सामान जोड़ें</h2>
 
 <p>पीले 🎤 बटन को दबाकर हिंदी में बोलिए।</p>
@@ -929,9 +1038,8 @@ ${F('pp','दाम (₹)','',1,1)}
 ${F('pq','कितना सामान है (संख्या)')}
 
 <label for="pc">किस्म</label>
-
 <select id="pc">
-${CATS.map(c=>`<option value="${c}">${c}</option>`).join('')}
+${CATS.map(c => `<option value="${c}">${c}</option>`).join('')}
 </select>
 
 ${F('ps','इसकी कहानी','किसने, कैसे बनाया?',1)}
@@ -1040,7 +1148,7 @@ return `
 mine().map(x=>`
 <div class="card sp">
 <h3>${E(x.name)}</h3>
-<div id="q${x.id}"></div>
+<div id="q${x.id}" class="qr-code"></div>
 </div>
 `).join('')
 }
@@ -1112,7 +1220,7 @@ ${sum}
 </p>
 
 <hr>
-`+(D[a]?D[a]:'')
+` + (typeof D[a] === 'function' ? D[a]() : '')
 };
 
 /* ADD PRODUCT */
@@ -1332,6 +1440,50 @@ caption=
 'Not just a product, but a piece of creativity. 💛 '+
 'Made by hand, made with love, made to be cherished.';
 
+}
+
+else if (
+  lower.includes('handloom') ||
+  lower.includes('hand loom') ||
+  lower.includes('weaving') ||
+  lower.includes('woven') ||
+  lower.includes('हथकरघा') ||
+  lower.includes('बुनाई') ||
+  lower.includes('करघा')
+) {
+  name = 'Handwoven Handloom Creations';
+
+  description =
+    'Our handmade handloom products are woven with care, skill, and a deep respect for traditional craftsmanship. ' +
+    'Each piece is thoughtfully made, giving you a unique textile with warmth and character.';
+
+  highlights =
+    '🧵 Woven by hand\n' +
+    '🌿 Made with care\n' +
+    '✨ Each piece is unique';
+
+  caption =
+    'Tradition woven into every thread. 🧵 Discover our handmade handloom creations, made with care and skill.';
+}
+
+else if (
+  (lower.includes('bamboo') || lower.includes('बांस') || lower.includes('बाँस')) &&
+  (lower.includes('chair') || lower.includes('कुर्सी'))
+) {
+  name = 'Handcrafted Bamboo Chair';
+
+  description =
+    'Add a natural touch to your home with this handcrafted bamboo chair. ' +
+    'Its hand-finished design brings the beauty of traditional craftsmanship ' +
+    'to your seating space.';
+
+  highlights =
+    '🎋 Made with bamboo\n' +
+    '🪑 Handcrafted design\n' +
+    '✨ A natural addition to your home';
+
+  caption =
+    'Bring the warmth of handcrafted bamboo into your home. 🎋';
 }
 
 else{
@@ -1709,3 +1861,64 @@ boot().then(()=>{
 route();
 tx()
 }).catch(fail);
+
+const chatPanel = document.querySelector('#chat-panel');
+const chatMessages = document.querySelector('#chat-messages');
+
+document.querySelector('#chat-toggle').addEventListener('click', () => {
+  chatPanel.hidden = false;
+  document.querySelector('#chat-input').focus();
+});
+
+document.querySelector('#chat-close').addEventListener('click', () => {
+  chatPanel.hidden = true;
+});
+
+document.querySelector('#chat-form').addEventListener('submit', event => {
+  event.preventDefault();
+
+  const input = document.querySelector('#chat-input');
+  const message = input.value.trim();
+  if (!message) return;
+
+  addChatMessage(message, 'user-message');
+  input.value = '';
+
+  setTimeout(() => {
+    addChatMessage(getChatReply(message), 'bot-message');
+  }, 300);
+});
+
+function addChatMessage(text, className) {
+  const message = document.createElement('p');
+  message.className = className;
+  message.textContent = text;
+  chatMessages.appendChild(message);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getChatReply(message) {
+  const text = message.toLowerCase();
+
+  if (text.includes('price') || text.includes('दाम') || text.includes('कीमत')) {
+    return 'Product prices are shown on each product card. Open a product to see more details.';
+  }
+
+  if (text.includes('order') || text.includes('ऑर्डर')) {
+    return 'You can view your orders from the Orders section in the menu.';
+  }
+
+  if (text.includes('delivery') || text.includes('shipping') || text.includes('डिलीवरी')) {
+    return 'Delivery details depend on the seller. Please contact the seller from their shop page.';
+  }
+
+  if (text.includes('product') || text.includes('सामान')) {
+    return 'Browse the Shop or Categories section to find products made by our Sakhis.';
+  }
+
+  if (text.includes('hello') || text.includes('hi') || text.includes('नमस्ते')) {
+    return 'Namaste! Ask me about products, prices, delivery, or orders.';
+  }
+
+  return 'I can help with products, prices, delivery, and orders. Try asking about one of those.';
+}

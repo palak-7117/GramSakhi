@@ -18,6 +18,26 @@
 <main id="app"></main>
 <div id="toast" role="status" hidden></div>
 
+<div id="chat-widget">
+  <button id="chat-toggle" type="button" aria-label="Open chat">💬 Help</button>
+
+  <section id="chat-panel" hidden aria-label="GramSakhi help chat">
+    <header class="chat-header">
+      <strong>GramSakhi Help</strong>
+      <button id="chat-close" type="button" aria-label="Close chat">×</button>
+    </header>
+
+    <div id="chat-messages" aria-live="polite">
+      <p class="bot-message">Namaste! Ask me about products, prices, or orders.</p>
+    </div>
+
+    <form id="chat-form">
+      <input id="chat-input" type="text" placeholder="Type a message..." autocomplete="off">
+      <button type="submit">Send</button>
+    </form>
+  </section>
+</div>
+
 <!-- SAKHI AI MODAL -->
 <div class="ai-modal-backdrop" id="aiBackdrop" onclick="if(event.target===this)closeAI()">
 
@@ -39,7 +59,7 @@ Just tell us about your product in your own words.
 Sakhi AI will help you turn it into a beautiful product listing.
 </div>
 
-<div class="ai-form">
+<!-- 
 
 <label for="aiProduct">What are you selling?</label>
 <input id="aiProduct" type="text" placeholder="e.g. Homemade mango pickle">
@@ -60,11 +80,61 @@ Sakhi AI will help you turn it into a beautiful product listing.
 
 <div id="aiResult" class="ai-result" hidden></div>
 
+</div> -->
+<div class="ai-form">
+  <label for="aiText">Tell us about your product</label>
+  <textarea
+    id="aiText"
+    rows="4"
+    placeholder="For example: Homemade lemon pickle made with lemons from my garden."
+  ></textarea>
+
+  <label for="aiPhoto">Upload a product photo (optional)</label>
+  <input
+    id="aiPhoto"
+    type="file"
+    accept="image/*"
+    onchange="previewAIPhoto(this)"
+  >
+  <img id="aiPreview" class="ai-preview" alt="Product photo preview">
+
+  <button class="ai-generate" type="button" onclick="generateAI()">
+    ✨ Create my listing
+  </button>
+
+  <div id="aiLoading" class="ai-loading">
+    Sakhi AI is preparing your listing…
+  </div>
+
+  <div id="aiResult" class="ai-result">
+    <div class="ai-result-box">
+      <h3>Product title</h3>
+      <p id="aiTitle"></p>
+      <button class="ai-copy" type="button" onclick="copyAI('aiTitle')">Copy</button>
+    </div>
+
+    <div class="ai-result-box">
+      <h3>Description</h3>
+      <p id="aiDescription"></p>
+      <button class="ai-copy" type="button" onclick="copyAI('aiDescription')">Copy</button>
+    </div>
+
+    <div class="ai-result-box">
+      <h3>Highlights</h3>
+      <p id="aiHighlights"></p>
+      <button class="ai-copy" type="button" onclick="copyAI('aiHighlights')">Copy</button>
+    </div>
+
+    <div class="ai-result-box">
+      <h3>Social media caption</h3>
+      <p id="aiCaption"></p>
+      <button class="ai-copy" type="button" onclick="copyAI('aiCaption')">Copy</button>
+    </div>
+  </div>
 </div>
 </div>
 </div>
 
-<script src="script.js"></script>
 <!-- FOOTER -->
 <footer id="site-footer">
 
