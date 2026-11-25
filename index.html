@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GramSakhi – ग्रामसखी</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav id="nav"></nav>
+<main id="app"></main>
+<div id="toast" role="status" hidden></div>
+
+<!-- SAKHI AI MODAL -->
+<div class="ai-modal-backdrop" id="aiBackdrop" onclick="if(event.target===this)closeAI()">
+
+<div class="ai-modal">
+
+<div class="ai-modal-header">
+<div>
+<div class="eyebrow">✨ SAKHI AI</div>
+<h2>Your Story, Beautifully Told.</h2>
+</div>
+
+<button class="ai-close" onclick="closeAI()">×</button>
+</div>
+
+<div class="ai-intro">
+<strong>🌷 You don't need fancy words.</strong>
+<br>
+Just tell us about your product in your own words.
+Sakhi AI will help you turn it into a beautiful product listing.
+</div>
+
+<div class="ai-form">
+
+<label for="aiProduct">What are you selling?</label>
+<input id="aiProduct" type="text" placeholder="e.g. Homemade mango pickle">
+
+<label for="aiDetails">Tell us about your product</label>
+<textarea id="aiDetails" rows="4" placeholder="Tell us how you make it, what makes it special..."></textarea>
+
+<label for="aiLanguage">Choose language</label>
+<select id="aiLanguage">
+<option value="English">English</option>
+<option value="Hindi">Hindi</option>
+<option value="Hinglish">Hinglish</option>
+</select>
+
+<button class="btn btn-primary" onclick="generateAIListing()">
+✨ Create my listing
+</button>
+
+<div id="aiResult" class="ai-result" hidden></div>
+
+</div>
+</div>
+</div>
+
+<script src="script.js"></script>
+<!-- FOOTER -->
+<footer id="site-footer">
+
+    <div class="footer-inner">
+
+        <!-- BRAND -->
+        <div>
+            <div class="footer-brand">🌾 GramSakhi</div>
+
+            <p>
+                Her hands create.<br>
+                Her dreams grow.
+            </p>
+
+            <p>
+                Empowering rural women and self-help groups
+                through technology, creativity and opportunity.
+            </p>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div>
+            <h3>Explore</h3>
+
+            <a href="#">Home</a>
+            <a href="#shop">Shop</a>
+            <a href="#cats">Categories</a>
+            <a href="#stores">Our Sakhis</a>
+            <a href="#stories">Stories</a>
+        </div>
+
+        <!-- COMMUNITY -->
+        <div>
+            <h3>Be a Part of the Journey</h3>
+
+            <a href="#join">Become a Sakhi</a>
+            <a href="#about">About GramSakhi</a>
+            <a href="#contact">Contact Us</a>
+            <a href="#profile">My Profile</a>
+
+            <p>🌻 Made with love for women, by technology.</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 GramSakhi. Made with ❤️ to empower women.
+    </div>
+
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
